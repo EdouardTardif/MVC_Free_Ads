@@ -31,4 +31,8 @@ Route::group(['middleware' => ['auth', 'active_user']], function() {
     Route::get('/home', 'HomeController@index')->name('home');
     // ... Any other routes that are accessed only by non-blocked user
 });
-// Route::get('/home', 'HomeController@index')->name('home');
+
+Route::get('/annonces','AnnonceController@index')->name('listall');
+
+Route::get('/new/annonce','AnnonceController@create')->name('newannonce');
+Route::post('/new/annonce','AnnonceController@store')->name('createannonce');

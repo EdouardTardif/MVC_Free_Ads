@@ -18,6 +18,7 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    
 </head>
 <body>
     <div id="app">
@@ -34,7 +35,7 @@
                     <!-- Left Side Of Navbar -->
                     <ul class="navbar-nav mr-auto">
                         <li class="nav-item">
-                            <a class="nav-link" href="">Deposer une annonce</a>
+                            <a class="nav-link" href="{{ url('/new/annonce') }}">Deposer une annonce</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="">Rechercher</a>
