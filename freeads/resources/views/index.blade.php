@@ -6,9 +6,9 @@
     <title>Document</title>
 </head>
 <body>
-    L'INDEX
-    <a href="/login">login</a>
-    <a href="/register">REGISTER</a>
+
+    @extends('layouts.app')
+
 
 </body>
 </html>
