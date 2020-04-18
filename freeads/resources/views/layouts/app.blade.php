@@ -10,6 +10,8 @@
     <title>{{ config('app.name', 'Laravel') }}</title>
 
     <!-- Scripts -->
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
     <script src="{{ asset('js/app.js') }}" defer></script>
 
     <!-- Fonts -->
@@ -18,7 +20,8 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
-    
+    <link href="{{ asset('css/annonceinfo.css') }}" rel="stylesheet">
+
 </head>
 <body>
     <div id="app">
@@ -38,7 +41,7 @@
                             <a class="nav-link" href="{{ url('/new/annonce') }}">Deposer une annonce</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="">Rechercher</a>
+                            <a class="nav-link" href="{{ url('/annonces') }}">Rechercher</a>
                         </li>
                     </ul>
 
@@ -64,6 +67,9 @@
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
                                     <a class="dropdown-item" href="{{ url('/profile/edit') }}">
                                         Edit profile
+                                    </a>
+                                    <a class="dropdown-item" href="{{ url('/user/annonces') }}">
+                                        Mes annonces
                                     </a>
                                     <a class="dropdown-item" href="{{ route('logout') }}"
                                        onclick="event.preventDefault();

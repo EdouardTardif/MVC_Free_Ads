@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Annonce;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class AnnonceController extends Controller
 {
@@ -27,9 +28,24 @@ class AnnonceController extends Controller
      */
     public function create()
     {
-        return view ('annonce.create');
+        if(Auth::user()){
+            return view ('annonce.create');
+        } else {
+            return redirect()->back();
+        }
+        
     }
+    public function userannonces(Annonce $annonce){
+        if(Auth::user()->id){
+            $annonces = Annonce::where('id_user', Auth::user()->id)->get();
+            // $annonces = DB::table('annonces')->where('id_user', Auth::user()->id);
+            return view ('annonce.mesannonces',compact('annonces'));
 
+        } else {
+            return redirect()->back();
+        }
+
+    }
     /**
      * Store a newly created resource in storage.
      *
@@ -62,12 +78,7 @@ class AnnonceController extends Controller
 
                 for($i = 1; $i <= 5; $i++){
                     $currimg = "image$i";
-                    echo $currimg;
-                    echo '<pre>';
-                    var_dump($request->all());
-                    echo '</pre>';
                     if($request->hasfile($currimg)){
-                        echo 'oui';
                         $file = $request->file($currimg);
                         $extension = $file->getClientOriginalExtension();
                         $filename = $this->random_str() . '.' . $extension;
@@ -77,7 +88,7 @@ class AnnonceController extends Controller
                 }
 
                 $annonce->save();
-                return redirect()->back();
+                return redirect('/user/annonces');
                 
             }
         }
@@ -102,9 +113,35 @@ class AnnonceController extends Controller
      * @param  \App\Annonce  $annonce
      * @return \Illuminate\Http\Response
      */
-    public function show(Annonce $annonce)
+
+    public function info($id){
+        if(Auth::user() && Auth::user()->id) {
+            $annonce = Annonce::find($id);
+
+            if($annonce && Auth::user()->id === $annonce->id_user){
+                return view('annonce.info',compact('annonce'));
+            } else {
+                return view('annonce.info',compact('annonce'));
+            }
+        } else {
+            return redirect()->back();
+        }
+    }
+
+
+    public function show($id)
     {
-        //
+        if(Auth::user() && Auth::user()->id) {
+            $annonce = Annonce::find($id);
+
+            if($annonce && Auth::user()->id === $annonce->id_user){
+                return view('annonce.edit',compact('annonce'));
+            } else {
+                return redirect()->back();
+            }
+        } else {
+            return redirect()->back();
+        }
     }
 
     /**
@@ -125,9 +162,41 @@ class AnnonceController extends Controller
      * @param  \App\Annonce  $annonce
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Annonce $annonce)
+    public function update($id, Request $request)
     {
-        //
+        if(Auth::user() && Auth::user()->id) {
+            $annonce = Annonce::find($id);
+
+            if($annonce && Auth::user()->id === $annonce->id_user){
+                $validate = $request->validate([
+                    'titre' => 'required|min:2|max:255',
+                    'description' => 'required|min:10',
+                    'prix' => 'required|int',
+                    'type' => 'required|max:255',
+                    'ville' => 'required|max:255',
+                    'prix' => 'required|int'
+                ]);
+                
+                if($validate){
+                    $annonce->titre = $request['titre'];
+                    $annonce->description = $request['description'];
+                    $annonce->prix = $request['prix'];
+                    $annonce->type = $request['type'];
+                    $annonce->ville = $request['ville'];
+                    if(isset($request['couleur'])){
+                        $annonce->couleur = $request['couleur'];
+                    }
+        
+                    $annonce->save();
+                    $request->session()->flash('success','Annonce Mise a jour');
+                }
+                return redirect()->back();
+            } else {
+                return redirect()->back();
+            }
+        } else {
+            return redirect()->back();
+        }
     }
 
     /**
@@ -136,8 +205,56 @@ class AnnonceController extends Controller
      * @param  \App\Annonce  $annonce
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Annonce $annonce)
+    public function destroy($id)
     {
-        //
+        if(Auth::user()->id) {
+            $annonce = Annonce::find($id);
+            if($annonce && Auth::user()->id === $annonce->id_user){
+                $annonce->delete();
+                return redirect('/user/annonces');
+            } else {
+                return redirect()->back();
+            }
+        } else {
+            return redirect()->back();
+        }
+    }
+
+
+
+    public function search(Request $request){
+        $validate = $request->validate([
+            'titre' => 'nullable|max:255',
+            'prix' => 'nullable|int',
+            'type' => 'nullable|max:255',
+            'ville' => 'nullable|max:255',
+            'list' => 'required'
+        ]);
+        $this->titre = $request['titre'] ?? '';
+        $this->prix = $request['prix'] ?? 100000000000;
+        $this->type = $request['type'] ?? '';
+        $this->ville = $request['ville'] ?? '';
+        if('prixc' === $request['list']){
+            $orderbycol = 'prix';
+            $orderbyval = 'ASC';
+        } elseif('prixd' === $request['list']) {
+            $orderbycol = 'prix';
+            $orderbyval = 'DESC';
+        } elseif('date' === $request['list']) {
+            $orderbycol = 'created_at';
+            $orderbyval = 'ASC';
+        } else {
+            $orderbycol = 'prix';
+            $orderbyval = 'ASC';
+        }
+        $annonces = Annonce::where('titre', 'LIKE', "%".$this->titre."%")
+                            ->where('prix', '<=' , $this->prix)
+                            ->where('ville', 'LIKE',"%".$this->ville."%")
+                            ->where('type', 'LIKE',"%".$this->type."%")
+                            ->orderBy($orderbycol, $orderbyval)
+                            ->get();
+        if($annonces){
+            return view ('annonce.listall',compact('annonces'));
+        }
     }
 }

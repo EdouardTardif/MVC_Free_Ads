@@ -36,3 +36,15 @@ Route::get('/annonces','AnnonceController@index')->name('listall');
 
 Route::get('/new/annonce','AnnonceController@create')->name('newannonce');
 Route::post('/new/annonce','AnnonceController@store')->name('createannonce');
+
+Route::get('/user/annonces','AnnonceController@userannonces')->name('user.annonces');
+Route::get('/edit/{id}','AnnonceController@show')->name('annonce.show');
+Route::post('/update/annonce/{id}','AnnonceController@update')->name('annonce.update');
+Route::get('/annonce/suppr/{id}','AnnonceController@destroy')->name('annonce.supprimer');
+
+route::get('/annonce/{id}','AnnonceController@info')->name('annonce.info');
+
+
+//search
+
+Route::get('/annonces/search','AnnonceController@search')->name('annonce.search');
