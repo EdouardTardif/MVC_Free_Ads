@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+
+use App\User;
 use App\Annonce;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -118,8 +120,10 @@ class AnnonceController extends Controller
         if(Auth::user() && Auth::user()->id) {
             $annonce = Annonce::find($id);
 
+            $annonce->name = User::find($annonce->id_user)->name;
+
             if($annonce && Auth::user()->id === $annonce->id_user){
-                return view('annonce.info',compact('annonce'));
+                return view('annonce.info2',compact('annonce'));
             } else {
                 return view('annonce.info',compact('annonce'));
             }

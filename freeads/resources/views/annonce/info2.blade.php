@@ -82,9 +82,6 @@
                     <br>
                     <br>
                     <h3>{{$annonce->name}}</h3>
-                    <div class="action">
-                        <a href="{{ route('message.user',$annonce->id_user)}}" class="add-to-cart btn btn-default" type="button">Ecrire au vendeur</a>
-                    </div>
                 </div>
             </div>
         </div>

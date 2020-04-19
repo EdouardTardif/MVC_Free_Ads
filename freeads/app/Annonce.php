@@ -11,4 +11,9 @@ class Annonce extends Model
         'titre', 'description', 'prix', 'type' , 'ville', 'couleur', 'image1','image2','image3','image4','image5'
     ];
     //
+
+    // public function user()
+    // {
+    //     return $this->hasOne('App\User');
+    // }
 }

@@ -48,3 +48,13 @@ route::get('/annonce/{id}','AnnonceController@info')->name('annonce.info');
 //search
 
 Route::get('/annonces/search','AnnonceController@search')->name('annonce.search');
+
+
+//messages
+Route::get('/message/user/{id}','MessageController@message')->name('message.user');
+
+Route::get('/message','MessageController@all')->name('message.all');
+Route::get('/message/{id}','MessageController@show')->name('message.show');
+
+
+Route::post('/message/send/{id}','MessageController@send')->name('message.send');
